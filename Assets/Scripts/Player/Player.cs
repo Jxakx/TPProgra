@@ -58,7 +58,11 @@ public class Player : MonoBehaviour {
     [SerializeField] private float enemiesXOffset = 10f;
     [SerializeField] private float enemiesYOffset = 10f;
     [SerializeField] private TextMeshProUGUI numbersTXT;  
-    [SerializeField] private TextMeshProUGUI distancia; 
+    [SerializeField] private TextMeshProUGUI distancia;
+
+    [Header("Sistema de Pistas")]
+    public TextMeshProUGUI clueText;
+    public float clueDisplayTime = 5f;
 
     private void Start()
     {
@@ -303,6 +307,31 @@ public class Player : MonoBehaviour {
                .Select(t => (Snake: t, distance: Vector2.Distance(transform.position, t.position)))
                .OrderBy(x => x.distance)
                .FirstOrDefault();
+    }
+
+    public void OnEnemyDefeated(GameObject enemy)
+    {
+        // Obtener la tupla completa
+        var clue = enemy.GetComponent<chaseEnemy>()?.GetBabyClue()
+                   ?? enemy.GetComponent<Snake>()?.GetBabyClue();
+
+        if (clue == null) return;
+
+        // Usar los 3 valores de la tupla
+        string clueMessage = $"{clue.Value.message} (Hace {clue.Value.time:F1} horas)";
+
+        if (clueText != null)
+        {
+            clueText.text = "[PISTA] " + clueMessage;
+            clueText.gameObject.SetActive(true);
+            Invoke("HideClue", 5f);
+        }
+
+    }
+    void HideClue()
+    {
+        if (clueText != null)
+            clueText.gameObject.SetActive(false);
     }
     private void EatApple()
     {

@@ -30,6 +30,7 @@ public class chaseEnemy : MonoBehaviour
 
     public bool shaseNow;
 
+
     void Start()
     {
         //if (positions.Length > 0)
@@ -170,8 +171,29 @@ public class chaseEnemy : MonoBehaviour
         yield break;
     }
 
+    public (string message, Vector3 position, float time) GetBabyClue()
+    {
+        string[] possibleClues = {
+        "Vi una cabrita asustada corriendo hacia las rocas",
+        "Escuché gritos cerca del río",
+        "El jefe golem tenía algo pequeño encerrado",
+        "Huellas frescas apuntan al bosque",
+        "Olía a leche de cabra en esta dirección",
+        "Las aves revoloteaban sobre un área al noroeste",
+        "El viento llevaba un olor familiar desde esa dirección"
+        };
+
+        return (
+            possibleClues[Random.Range(0, possibleClues.Length)], // Mensaje
+            transform.position + new Vector3(Random.Range(-5f, 5f), 0, Random.Range(-5f, 5f)), // Posición modificada
+            Random.Range(1f, 4f) // Tiempo en horas
+        );
+    }
     void Death()
     {
         Explode();
+        Player player = FindObjectOfType<Player>();
+        if (player != null)
+            player.OnEnemyDefeated(this.gameObject);
     }
 }

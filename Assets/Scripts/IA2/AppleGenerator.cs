@@ -16,18 +16,17 @@ public class AppleGenerator : MonoBehaviour
         GenerateApples();
     }
 
-    // Función que usa LINQ (Where del Grupo 1) + Generator (Range)
     public void GenerateApples()
     {
-        // GENERATOR: Crear posiciones candidatas usando Enumerable.Range
+        // GENERATOR
         var positions = Enumerable.Range(0, maxApples * 3) // Genera 3 veces más posiciones de las necesarias
             .Select(_ => Random.insideUnitSphere * spawnRadius + transform.position)
             .Where(pos => pos.y > 0.5f) // Asegurar que no estén bajo tierra
 
-            // LINQ Grupo 1: Where para filtrar posiciones seguras
+            // Where para filtrar posiciones seguras
             .Where(pos => Vector3.Distance(pos, player.position) > minDistanceFromPlayer)
 
-            // LINQ Grupo 1: Take para limitar la cantidad
+            // Take para limitar la cantidad
             .Take(maxApples)
 
             // Eliminar posiciones muy cercanas entre sí

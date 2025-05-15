@@ -25,7 +25,7 @@ public class PortalManager : MonoBehaviour
             bool hasAllOrbs = requiredOrbs.All(orb => playerInventory.HasItemsy(orb));
             dimensionalPortal.SetActive(hasAllOrbs);
 
-            // Tipo anónimo para UI
+            // Tipo anónimo
             var portalUIInfo = new
             {
                 IsActive = hasAllOrbs,
@@ -36,13 +36,9 @@ public class PortalManager : MonoBehaviour
            
             if (portalStatusText != null)
             {
-                portalStatusText.text = $"Orbes: {portalUIInfo.Collected}/3\n" +
-                                      $"Faltan: {string.Join(", ", portalUIInfo.Missing)}";
+                //portalStatusText.text = $"Orbes: {portalUIInfo.Collected}/3\n" +
+                                      //$"Faltan: {string.Join(", ", portalUIInfo.Missing)}";
             }
-
-            
-            Debug.Log($"Portal activo: {portalUIInfo.IsActive} | " +
-                     $"Orbes faltantes: {portalUIInfo.Missing.Length}");
 
             yield return new WaitForSeconds(0.5f);
         }
