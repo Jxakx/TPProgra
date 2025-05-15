@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using System.Linq;
 
 public class Player : MonoBehaviour {
 
@@ -53,6 +54,11 @@ public class Player : MonoBehaviour {
 
     [Header("Propiedades player")]
     private Vector3 _direction;
+
+    [SerializeField] private float enemiesXOffset = 10f;
+    [SerializeField] private float enemiesYOffset = 10f;
+    [SerializeField] private TextMeshProUGUI numbersTXT;  
+    [SerializeField] private TextMeshProUGUI distancia; 
 
     private void Start()
     {
@@ -138,6 +144,19 @@ public class Player : MonoBehaviour {
         if (Input.GetKey(KeyCode.D))
         {
             transform.Rotate(0, _speedRotation * _xAxis * Time.deltaTime, 0);
+        }
+
+        var closestSnake = EnemiesRange(enemiesXOffset, enemiesYOffset);
+        if (closestSnake.enemies != null)
+        {
+            //Aparece el texto con mts al lado
+            numbersTXT.text = $"{closestSnake.distance:F2}";
+            distancia.text = $"Prox. Serpiente:";
+        }
+        else
+        {
+            numbersTXT.text = "";
+            distancia.text = "";
         }
     }
 
@@ -271,6 +290,19 @@ public class Player : MonoBehaviour {
         gamePlayCanvas.onLose();
 
         Destroy(GetComponent<Player>(), 1);
+    }
+
+    public (Transform enemies, float distance) EnemiesRange(float XOffset, float YOffset)
+    {
+        var allSnakes = FindObjectsOfType<Snake>().Select(c => c.transform);
+        var inBox = allSnakes.Where(t =>
+            Mathf.Abs(t.position.x - transform.position.x) <= XOffset &&
+            Mathf.Abs(t.position.y - transform.position.y) <= YOffset);
+
+        return inBox
+               .Select(t => (Snake: t, distance: Vector2.Distance(transform.position, t.position)))
+               .OrderBy(x => x.distance)
+               .FirstOrDefault();
     }
     private void EatApple()
     {

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,6 +38,7 @@ public class Inventory : MonoBehaviour
         return items.Contains(item);
     }
 
+    
     public int CountApples() 
     {
         int nApples = 0;
